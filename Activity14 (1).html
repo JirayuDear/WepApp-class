@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+  <head></head>
+  <body>
+    <div id="maincontainer"></div>
+    <script>
+      let main_container = document.getElementById("maincontainer");
+
+      // ---------------------------------------------------------------------------------
+
+      let header = document.createElement("h2");
+      header.textContent = "Exercise 04: JavaScript&DOM";
+
+      // ---------------------------------------------------------------------------------
+
+      let button_date_time = document.createElement("button");
+      button_date_time.textContent = "Click me to display Date and Time";
+      button_date_time.id = "my-btn";
+      button_date_time.className = "btn";
+
+      const worker = new Worker("worker.js");
+
+      function updateButtonColor(item, dateObject) {
+        let time = new Date();
+        let s = dateObject.getSeconds();
+
+        let lastDigit = s % 10;
+
+        item.textContent = time;
+
+        switch (lastDigit) {
+          case 0:
+            item.style.background = "green";
+            item.style.color = "pink";
+            break;
+          case 1:
+            item.style.background = "pink";
+            item.style.color = "teal";
+            break;
+          case 2:
+            item.style.background = "teal";
+            item.style.color = "orange";
+            break;
+          case 3:
+            item.style.background = "orange";
+            item.style.color = "purple";
+            break;
+          case 4:
+            item.style.background = "purple";
+            item.style.color = "red";
+            break;
+          case 5:
+            item.style.background = "red";
+            item.style.color = "yellow";
+            break;
+          case 6:
+            item.style.background = "yellow";
+            item.style.color = "gold";
+            break;
+          case 7:
+            item.style.background = "gold";
+            item.style.color = "brown";
+            break;
+          case 8:
+            item.style.background = "brown";
+            item.style.color = "gray";
+            break;
+          case 9:
+            item.style.background = "gray";
+            item.style.color = "green";
+            break;
+        }
+      }
+
+      let isStarted = false; 
+      let toggle_time_btn = 0; 
+      let spacer; 
+
+      button_date_time.addEventListener("click", function () {
+        if (!isStarted) {
+          updateButtonColor(button_date_time, new Date());
+          worker.onmessage = function (event) {
+            if (toggle_time_btn == 1) {
+              const currentTime = new Date(event.data);
+              updateButtonColor(button_date_time, currentTime);
+            }
+          };
+
+          isStarted = true;
+        }
+
+        if (toggle_time_btn == 0) {
+          updateButtonColor(button_date_time, new Date());
+          button_date_time.style.position = "fixed";
+          button_date_time.style.top = "0px";
+          button_date_time.style.right = "0px";
+
+          spacer = document.createElement("div");
+          spacer.style.height = button_date_time.offsetHeight + "px";
+          spacer.style.marginBottom = "30px";
+          main_container.insertBefore(spacer, personal_info);
+
+          toggle_time_btn = 1; 
+        } else {
+          button_date_time.style.position = "static";
+          button_date_time.style.margin = "";
+
+          if (spacer) {
+            spacer.remove();
+          }
+          toggle_time_btn = 0; 
+        }
+      });
+
+      // ---------------------------------------------------------------------------------
+
+      let personal_info = document.createElement("a");
+
+      personal_info.textContent = "Personal Info";
+      personal_info.setAttribute("href", "");
+      // personal_info.style.position = 'fixed';
+      personal_info.style.color = "pink";
+      personal_info.style.display = "block";
+      personal_info.style.marginTop = "30px";
+
+      personal_info.addEventListener("mouseenter", function () {
+        personal_info.style.background = "gold";
+        personal_info.style.color = "blue";
+        personal_info.style.width = "fit-content";
+      });
+      personal_info.addEventListener("mouseleave", function () {
+        personal_info.style.background = "white";
+        personal_info.style.color = "pink";
+        personal_info.style.width = "fit-content";
+      });
+
+      let toggle_count = 0;
+      let info_list = document.createElement("ul");
+      let info_item1 = document.createElement("li");
+      let info_item2 = document.createElement("li");
+      let info_item3 = document.createElement("li");
+
+      info_item1.textContent = "Jirayu&Phumsiri, ID: 67010145";
+      info_item2.textContent = "Subject: WEB APPLICATION DEVELOPMENT";
+      info_item3.textContent = "Semester: 2/2568";
+
+      info_list.appendChild(info_item1);
+      info_list.appendChild(info_item2);
+      info_list.appendChild(info_item3);
+
+      personal_info.addEventListener("click", function (event) {
+        event.preventDefault();
+        if (toggle_count == 0) {
+          main_container.insertBefore(info_list, snapshots);
+          toggle_count = 1;
+        } else {
+          main_container.removeChild(info_list);
+          toggle_count = 0;
+        }
+      });
+
+      // ---------------------------------------------------------------------------------
+
+      let snapshots = document.createElement("h1");
+      let snapshots_list = document.createElement("ul");
+
+      let main_show_img = document.createElement("img");
+      main_show_img.style.width = "500px";
+      main_show_img.src =
+        "https://www.ce.kmitl.ac.th/api/main/banner/download/1";
+
+      snapshots.textContent = "Snapshots";
+
+      function createHrefItem(text) {
+        let li = document.createElement("li");
+        let a = document.createElement("a");
+
+        a.textContent = text;
+        a.setAttribute("href", "");
+
+        li.style.width = "fit-content";
+        li.appendChild(a);
+        return li;
+      }
+
+      function createEventImg(item, url) {
+        let link = item.querySelector("a");
+
+        link.addEventListener("click", function (event) {
+          event.preventDefault();
+
+          main_show_img.src = url;
+        });
+      }
+
+      let firework_item = createHrefItem("Firework");
+      let crest_item = createHrefItem("Crest");
+      let action_item = createHrefItem("Action");
+      let buffalo_item = createHrefItem("Buffalo");
+
+      createEventImg(
+        firework_item,
+        "https://www.chemistryviews.org/wp-content/uploads/legacy/common/images/thumbnails/source/16fb40556a4.jpg",
+      );
+
+      createEventImg(
+        crest_item,
+        "https://play-lh.googleusercontent.com/dOBtfcJPN6o6dAL4ftpGpBx3O_EB-xM28vIk2M1Ls4LjqLBgc0ipOlpCf0wHZX17jes",
+      );
+
+      createEventImg(
+        action_item,
+        "https://cdn.onefc.com/wp-content/uploads/2026/01/abdullarambo.png",
+      );
+
+      createEventImg(
+        buffalo_item,
+        "https://static.vecteezy.com/system/resources/previews/017/697/929/large_2x/thai-buffalo-on-white-background-free-photo.jpg",
+      );
+
+      // ---------------------------------------------------------------------------------
+
+      snapshots_list.appendChild(firework_item);
+      snapshots_list.appendChild(crest_item);
+      snapshots_list.appendChild(action_item);
+      snapshots_list.appendChild(buffalo_item);
+
+      main_container.appendChild(header);
+      main_container.appendChild(button_date_time);
+      main_container.appendChild(personal_info);
+      main_container.appendChild(snapshots);
+      main_container.appendChild(snapshots_list);
+      main_container.appendChild(main_show_img);
+    </script>
+  </body>
+</html>
